@@ -60,7 +60,7 @@ import SDLView from "./SchemaExplorer/SDLView";
 import TopBar from "./TopBar/TopBar";
 
 /**
- * The top-level React component for GraphQLEditor, intended to encompass the entire
+ * The top-level React component for JagGraphQLEditor, intended to encompass the entire
  * browser viewport.
  */
 
@@ -118,7 +118,7 @@ export interface ToolbarButtonProps extends SimpleProps {
   label: string;
 }
 
-class GraphQLEditor extends React.PureComponent<Props & ReduxProps> {
+class JagGraphQLEditor extends React.PureComponent<Props & ReduxProps> {
   public codeMirrorSizer;
   public queryEditorComponent;
   public variableEditorComponent;
@@ -159,13 +159,46 @@ class GraphQLEditor extends React.PureComponent<Props & ReduxProps> {
   render() {
     return (
       <Container>
-        <EditorWrapper>
-          <TopBar
-            shareEnabled={this.props.shareEnabled}
-            fixedEndpoint={this.props.fixedEndpoint}
-          />
-          <Intro>Hit the Play Button to get a response here</Intro>
-        </EditorWrapper>
+        <EditorBar
+          ref={this.setEditorBarComponent}
+          onMouseDown={this.handleResizeStart}
+        >
+          <QueryWrap flex={this.props.editorFlex}>
+            <ul>
+              <li>One</li>
+              <li>One</li>
+              <li>One</li>
+              <li>One</li>
+              <li>One</li>
+              <li>One</li>
+              <li>One</li>
+              <li>One</li>
+              <li>One</li>
+              <li>One</li>
+            </ul>
+            <QueryDragBar ref={this.setQueryResizer} />
+          </QueryWrap>
+          <ResultWrap>
+            <ResultDragBar ref={this.setResponseResizer} />
+            <EditorWrapper>{this.props.children}</EditorWrapper>
+          </ResultWrap>
+        </EditorBar>
+
+        <SideTabs>
+          <SideTab label="Docs" activeColor="green" tabWidth="49px">
+            <GraphDocs
+              schema={this.props.schema}
+              ref={this.setDocExplorerRef}
+            />
+          </SideTab>
+          <SideTab label="Schema" activeColor="blue" tabWidth="65px">
+            <SDLView
+              schema={this.props.schema}
+              ref={this.setSchemaExplorerRef}
+              sessionId={this.props.sessionId}
+            />
+          </SideTab>
+        </SideTabs>
       </Container>
     );
   }
@@ -483,7 +516,7 @@ connect<any, any, any>(
   {
     withRef: true,
   }
-)(GraphQLEditor);
+)(JagGraphQLEditor);
 
 const EditorBar = styled.div`
   display: flex;
@@ -603,7 +636,6 @@ const QueryWrap = styled<QueryProps, "div">("div")`
   display: flex;
   flex-direction: column;
   flex: ${(props) => props.flex} 1 0%;
-  border-top: 8px solid ${(props) => props.theme.editorColours.resultBackground};
   background: ${(p) => p.theme.editorColours.editorBackground};
   color: ${(p) => p.theme.colours.textInactive};
 `;
