@@ -70,6 +70,9 @@ export interface Props {
   fixedEndpoint?: boolean;
   schema?: GraphQLSchema;
 }
+export interface State {
+  jagEditorFlex: number;
+}
 
 export interface ReduxProps {
   setStacks: (sessionId: string, stack: any[]) => void;
@@ -100,6 +103,7 @@ export interface ReduxProps {
   responseExtensions: any;
   tracingSupported?: boolean;
   editorFlex: number;
+
   headers: string;
   headersCount: number;
   queryVariablesActive: boolean;
@@ -118,7 +122,7 @@ export interface ToolbarButtonProps extends SimpleProps {
   label: string;
 }
 
-class JagGraphQLEditor extends React.PureComponent<Props & ReduxProps> {
+class JagGraphQLEditor extends React.PureComponent<Props & ReduxProps, State> {
   public codeMirrorSizer;
   public queryEditorComponent;
   public variableEditorComponent;
@@ -131,6 +135,15 @@ class JagGraphQLEditor extends React.PureComponent<Props & ReduxProps> {
   private responseResizer: any;
   private queryVariablesRef;
   private httpHeadersRef;
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      jagEditorFlex: 0.35,
+    };
+
+    this.handleResizeStart = this.handleResizeStart.bind(this);
+  }
 
   componentDidMount() {
     // Ensure a form of a schema exists (including `null`) and
@@ -163,7 +176,7 @@ class JagGraphQLEditor extends React.PureComponent<Props & ReduxProps> {
           ref={this.setEditorBarComponent}
           onMouseDown={this.handleResizeStart}
         >
-          <QueryWrap flex={this.props.editorFlex}>
+          <QueryWrap flex={this.state.jagEditorFlex}>
             <ul>
               <li>One</li>
               <li>One</li>
@@ -343,7 +356,11 @@ class JagGraphQLEditor extends React.PureComponent<Props & ReduxProps> {
       const editorBar = ReactDOM.findDOMNode(this.editorBarComponent);
       const leftSize = moveEvent.clientX - getLeft(editorBar) - offset;
       const rightSize = editorBar.clientWidth - leftSize;
-      this.props.setEditorFlex(leftSize / rightSize);
+      // this.props.setEditorFlex(leftSize / rightSize);
+      this.setState({});
+      this.setState({
+        jagEditorFlex: leftSize / rightSize,
+      });
     };
 
     let onMouseUp: any = () => {
@@ -474,24 +491,24 @@ class JagGraphQLEditor extends React.PureComponent<Props & ReduxProps> {
 }
 
 const mapStateToProps = createStructuredSelector({
-  queryRunning: getQueryRunning,
-  responses: getResponses,
-  subscriptionActive: getSubscriptionActive,
-  variableEditorOpen: getVariableEditorOpen,
-  variableEditorHeight: getVariableEditorHeight,
-  responseTracingOpen: getResponseTracingOpen,
-  responseTracingHeight: getResponseTracingHeight,
-  responseExtensions: getResponseExtensions,
-  currentQueryStartTime: getCurrentQueryStartTime,
-  currentQueryEndTime: getCurrentQueryEndTime,
-  tracingSupported: getTracingSupported,
+  // queryRunning: getQueryRunning,
+  // responses: getResponses,
+  // subscriptionActive: getSubscriptionActive,
+  // variableEditorOpen: getVariableEditorOpen,
+  // variableEditorHeight: getVariableEditorHeight,
+  // responseTracingOpen: getResponseTracingOpen,
+  // responseTracingHeight: getResponseTracingHeight,
+  // responseExtensions: getResponseExtensions,
+  // currentQueryStartTime: getCurrentQueryStartTime,
+  // currentQueryEndTime: getCurrentQueryEndTime,
+  // tracingSupported: getTracingSupported,
   editorFlex: getEditorFlex,
-  queryVariablesActive: getQueryVariablesActive,
-  headers: getHeaders,
-  operations: getOperations,
-  operationName: getOperationName,
-  headersCount: getHeadersCount,
-  sessionId: getSelectedSessionIdFromRoot,
+  // queryVariablesActive: getQueryVariablesActive,
+  // headers: getHeaders,
+  // operations: getOperations,
+  // operationName: getOperationName,
+  // headersCount: getHeadersCount,
+  // sessionId: getSelectedSessionIdFromRoot,
 });
 
 export default // TODO fix redux types
